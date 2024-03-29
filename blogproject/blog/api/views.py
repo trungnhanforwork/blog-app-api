@@ -46,7 +46,8 @@ class CommentCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         pk = self.kwargs.get("pk")
         post = Post.objects.get(pk=pk)
-        serializer.save(post=post)
+        user = self.request.user
+        serializer.save(post=post, user=user)
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -72,14 +73,23 @@ class UserCommentList(generics.ListAPIView):
 
 
 # Post
-class PostListAPIView(generics.ListCreateAPIView):
+class PostList(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
 
+class PostCreate(generics.CreateAPIView):
+    serializer_class = PostSerializer
+
+    def perform_create(self, serializer):
+        pk = self.kwargs.get("pk")
+        user = self.request.user
+        serializer.save(author=user)
+
+
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 
 class UserPostList(generics.ListAPIView):

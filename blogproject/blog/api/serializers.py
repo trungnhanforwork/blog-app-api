@@ -37,12 +37,15 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+
     class Meta:
         model = Comment
         exclude = ("post",)
 
 
 class PostSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
     comments = serializers.StringRelatedField(many=True)
 
     class Meta:
