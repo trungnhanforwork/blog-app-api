@@ -5,7 +5,7 @@ from blog.api.serializers import (
     RoleSerializer,
 )
 from blog.models import *
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -56,7 +56,7 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PostCommentList(generics.ListAPIView):
-    serializer_class = Comment
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
         pk = self.kwargs["pk"]

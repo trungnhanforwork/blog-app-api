@@ -42,4 +42,4 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.post.title + " | " + str(self.review_user)
+        return self.post.title + " | " + str(self.user)
