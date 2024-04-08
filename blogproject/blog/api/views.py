@@ -1,11 +1,8 @@
-from blog.api.serializers import (
-    CategorySerializer,
-    CommentSerializer,
-    PostSerializer,
-    RoleSerializer,
-)
+from blog.api.permission import *
+from blog.api.serializers import CategorySerializer, CommentSerializer, PostSerializer
 from blog.models import *
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,17 +20,6 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
 
 
-# Role
-class RoleList(generics.ListCreateAPIView):
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
-
-
-class RoleDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
-
-
 # Comment
 class CommentList(generics.ListAPIView):
     queryset = Comment.objects.all()
@@ -42,6 +28,7 @@ class CommentList(generics.ListAPIView):
 
 class CommentCreate(generics.CreateAPIView):
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         pk = self.kwargs.get("pk")
@@ -51,6 +38,7 @@ class CommentCreate(generics.CreateAPIView):
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsCommentUserOrReadOnly]
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
@@ -80,11 +68,12 @@ class PostList(generics.ListAPIView):
 
 class PostCreate(generics.CreateAPIView):
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         pk = self.kwargs.get("pk")
         user = self.request.user
-        serializer.save(author=user)
+        serializer.save(user=user)
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -97,4 +86,4 @@ class UserPostList(generics.ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs["pk"]
-        return Post.objects.filter(author=pk)
+        return Post.objects.filter(user=pk)

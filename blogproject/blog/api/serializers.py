@@ -1,5 +1,5 @@
+from blog.models import Category, Comment, Post
 from rest_framework import serializers
-from blog.models import Category, Role, Post, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -19,23 +19,6 @@ class CategorySerializer(serializers.ModelSerializer):
             return value
 
 
-class RoleSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Role
-        fields = "__all__"
-
-        def validate_name(self, value):
-            """
-            Check if the role name already exists in the database.
-            """
-            if Role.objects.filter(name=value).exists():
-                raise serializers.ValidationError(
-                    "A role with this name already exists."
-                )
-            return value
-
-
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
 
@@ -50,4 +33,4 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        exclude = ("author",)
+        exclude = ("user",)
