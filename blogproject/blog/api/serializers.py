@@ -25,12 +25,18 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         exclude = ("post",)
+        # fields = "__all__"
 
 
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     comments = serializers.StringRelatedField(many=True)
+    category_name = serializers.SerializerMethodField()
+
+    def get_category_name(self, obj):
+        return obj.category.name
 
     class Meta:
         model = Post
-        exclude = ("user",)
+        fields = "__all__"
+        # exclude = ("user",)

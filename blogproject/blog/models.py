@@ -11,9 +11,11 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=50)
-    content = models.CharField(max_length=200)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="author")
+    title = models.CharField(max_length=1000)
+    content = models.CharField(max_length=100000)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user", default=1
+    )
     category = models.ForeignKey(
         Category, on_delete=models.SET_DEFAULT, default=5, related_name="category"
     )
@@ -21,9 +23,6 @@ class Post(models.Model):
     vote = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
 
 
 class Comment(models.Model):
@@ -33,6 +32,3 @@ class Comment(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.post.title + " | " + str(self.user)

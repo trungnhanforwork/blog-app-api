@@ -2,9 +2,11 @@ from blog.api.permission import *
 from blog.api.serializers import CategorySerializer, CommentSerializer, PostSerializer
 from blog.models import *
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.permissions import (
+    IsAdminUser,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 
 # Create your views here: Class base view
 
@@ -18,6 +20,7 @@ class CategoryList(generics.ListCreateAPIView):
 class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    # permission_classes = [IsAdminUser]
 
 
 # Comment
@@ -68,7 +71,7 @@ class PostList(generics.ListAPIView):
 
 class PostCreate(generics.CreateAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         pk = self.kwargs.get("pk")

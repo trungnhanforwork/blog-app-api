@@ -6,6 +6,7 @@ urlpatterns = [
     path("category/<int:pk>", CategoryDetail.as_view(), name="category-detail"),
     # Get all of post
     path("list/", PostList.as_view(), name="post-list"),
+    path("new/", PostCreate.as_view(), name="post-list"),
     path("<int:pk>/post", UserPostList.as_view(), name="user-post"),
     # Get post detail coresspond post_id
     path("<int:pk>", PostDetail.as_view(), name="post-detail"),
