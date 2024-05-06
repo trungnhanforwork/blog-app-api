@@ -24,8 +24,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        exclude = ("post",)
-        # fields = "__all__"
+        fields = ["user", "description", "created_at", "updated_at"]
 
 
 class PostSerializer(serializers.ModelSerializer):

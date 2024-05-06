@@ -1,6 +1,7 @@
 from blog.api.permission import *
 from blog.api.serializers import CategorySerializer, CommentSerializer, PostSerializer
 from blog.models import *
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import (
     IsAdminUser,
@@ -51,6 +52,11 @@ class PostCommentList(generics.ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs["pk"]
+
+        # Check if the post with the given pk exists
+        get_object_or_404(Post, pk=pk)
+
+        # Fetch comments associated with the post
         return Comment.objects.filter(post=pk)
 
 
