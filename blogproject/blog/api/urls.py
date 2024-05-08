@@ -3,22 +3,22 @@ from django.urls import path
 
 urlpatterns = [
     path("category/list/", CategoryList.as_view(), name="category-list"),
-    path("category/<int:pk>", CategoryDetail.as_view(), name="category-detail"),
+    path("category/<int:pk>/", CategoryDetail.as_view(), name="category-detail"),
     # Get all of post
     path("list/", PostList.as_view(), name="post-list"),
     # Create new post
-    path("new/", PostCreate.as_view(), name="post-list"),
+    path("new/", PostCreate.as_view(), name="post-add"),
     # Get post coresspond user_id
-    path("<int:pk>/post", UserPostList.as_view(), name="user-post"),
+    path("<int:pk>/post/", UserPostList.as_view(), name="user-post"),
     # Get post detail coresspond post_id
-    path("<int:pk>", PostDetail.as_view(), name="post-detail"),
+    path("<int:pk>/", PostDetail.as_view(), name="post-detail"),
     # Create comment coresspond post_id
     path(
-        "<int:pk>/comments/create", CommentCreate.as_view(), name="post-comment-create"
+        "<int:pk>/comments/create/", CommentCreate.as_view(), name="post-comment-create"
     ),
     # Read all comments coresspond post_id
-    path("<int:pk>/comments", PostCommentList.as_view(), name="post-comment-list"),
+    path("<int:pk>/comments/", PostCommentList.as_view(), name="post-comment-list"),
     # Read comment detail
-    path("comment/<int:pk>", CommentDetail.as_view(), name="detail-comment"),
+    path("comment/<int:pk>/", CommentDetail.as_view(), name="detail-comment"),
     path("search/", PostSearch.as_view(), name="post-search"),
 ]
