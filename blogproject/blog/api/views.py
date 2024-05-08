@@ -2,7 +2,7 @@ from blog.api.permission import *
 from blog.api.serializers import CategorySerializer, CommentSerializer, PostSerializer
 from blog.models import *
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import filters, generics
 from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticated,
@@ -42,7 +42,7 @@ class CommentCreate(generics.CreateAPIView):
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsCommentUserOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
@@ -88,6 +88,14 @@ class PostCreate(generics.CreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+
+
+class PostSearch(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["title", "content"]
 
 
 class UserPostList(generics.ListAPIView):

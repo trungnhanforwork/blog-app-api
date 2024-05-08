@@ -6,7 +6,9 @@ urlpatterns = [
     path("category/<int:pk>", CategoryDetail.as_view(), name="category-detail"),
     # Get all of post
     path("list/", PostList.as_view(), name="post-list"),
+    # Create new post
     path("new/", PostCreate.as_view(), name="post-list"),
+    # Get post coresspond user_id
     path("<int:pk>/post", UserPostList.as_view(), name="user-post"),
     # Get post detail coresspond post_id
     path("<int:pk>", PostDetail.as_view(), name="post-detail"),
@@ -18,4 +20,5 @@ urlpatterns = [
     path("<int:pk>/comments", PostCommentList.as_view(), name="post-comment-list"),
     # Read comment detail
     path("comment/<int:pk>", CommentDetail.as_view(), name="detail-comment"),
+    path("search/", PostSearch.as_view(), name="post-search"),
 ]
