@@ -21,7 +21,7 @@ class Post(models.Model):
     )
     active = models.BooleanField(default=True)
     vote = models.IntegerField(default=0)
-    voters = models.ManyToManyField(User, related_name='voted_posts')
+    voters = models.ManyToManyField(User, related_name='voted_posts', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
