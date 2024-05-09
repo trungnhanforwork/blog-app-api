@@ -29,7 +29,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
-    comments = serializers.StringRelatedField(many=True)
+    comments = serializers.StringRelatedField(many=True, read_only=True)
     # comments = serializers.StringRelatedField(many=True, allow_null=True, allow_empty=True)
     category_name = serializers.SerializerMethodField()
 
