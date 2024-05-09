@@ -30,6 +30,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     comments = serializers.StringRelatedField(many=True, read_only=True)
+    # categories = serializers.SlugRelatedField(many=True, queryset=Category.objects.all(), slug_field='name')
     # comments = serializers.StringRelatedField(many=True, allow_null=True, allow_empty=True)
     category_name = serializers.SerializerMethodField()
 

@@ -1,5 +1,5 @@
 from blog.api.permission import *
-from blog.api.serializers import CategorySerializer, CommentSerializer, PostSerializer
+from blog.api.serializers import *
 from blog.models import *
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, generics
@@ -8,6 +8,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here: Class base view
 
@@ -94,8 +95,15 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 class PostSearch(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["title", "content"]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['title', 'content']
+    
+    def get_queryset(self):
+        query = self.request.query_params.get('query', None)
+        if query:
+            queryset = self.queryset.filter(title__icontains=query) | self.queryset.filter(content__icontains=query)
+            return queryset
+        return self.queryset.none()
 
 
 class UserPostList(generics.ListAPIView):
