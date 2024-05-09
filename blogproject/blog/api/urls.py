@@ -18,6 +18,12 @@ urlpatterns = [
     ),
     # Read all comments coresspond post_id
     path("<int:pk>/comments/", PostCommentList.as_view(), name="post-comment-list"),
+    # Vote for post with id 
+    path("<int:pk>/vote/", PostVote.as_view(), name="post-vote"),
+    # Check vote status
+    path("<int:pk>/voting-status/", post_voting_status, name="voting-status"),
+    # Vote count
+    path("<int:pk>/vote-count/", PostVoteCount.as_view(), name="post-vote-count"),
     # Read comment detail
     path("comment/<int:pk>/", CommentDetail.as_view(), name="detail-comment"),
     path("search/", PostSearch.as_view(), name="post-search"),

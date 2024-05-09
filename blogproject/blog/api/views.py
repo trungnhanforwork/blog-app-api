@@ -1,15 +1,17 @@
+from rest_framework.decorators import api_view, permission_classes
 from blog.api.permission import *
 from blog.api.serializers import *
 from blog.models import *
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, generics, status
 from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
-from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 # Create your views here: Class base view
 
 
@@ -105,6 +107,38 @@ class PostSearch(generics.ListAPIView):
             return queryset
         return self.queryset.none()
 
+class PostVote(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        return self.vote_or_unvote(request, pk, action="vote")
+
+    def delete(self, request, pk):
+        return self.vote_or_unvote(request, pk, action="unvote")
+
+    def vote_or_unvote(self, request, pk, action):
+        post = get_object_or_404(Post, pk=pk)
+        user = request.user
+
+        if action == "vote":
+            # Check if the user has already voted for this post
+            if post.voters.filter(id=user.id).exists():
+                return Response({"message": "You have already voted for this post."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                post.voters.add(user)
+                post.vote += 1
+                post.save()
+                return Response({"message": "Vote added successfully."}, status=status.HTTP_201_CREATED)
+
+        elif action == "unvote":
+            # Check if the user has already voted for this post
+            if post.voters.filter(id=user.id).exists():
+                post.voters.remove(user)
+                post.vote -= 1
+                post.save()
+                return Response({"message": "Vote removed successfully."}, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "You have not voted for this post."}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserPostList(generics.ListAPIView):
     serializer_class = PostSerializer
@@ -112,3 +146,18 @@ class UserPostList(generics.ListAPIView):
     def get_queryset(self):
         pk = self.kwargs["pk"]
         return Post.objects.filter(user=pk)
+
+class PostVoteCount(APIView):
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        return Response({"vote_count": post.vote}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def post_voting_status(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    user = request.user
+
+    has_voted = post.voters.filter(id=user.id).exists()
+
+    return Response({'hasVoted': has_voted})
