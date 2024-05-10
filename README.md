@@ -47,6 +47,7 @@ cd blogproject
 ### Migrate Database
 Migrate the database by running the following command:
 ```bash
+python manage.py makemigrations
 python manage.py migrate
 ```
 
