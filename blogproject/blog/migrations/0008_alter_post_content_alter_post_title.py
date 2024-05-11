@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='post',
             name='content',
-            field=models.CharField(max_length=100000),
+            field=models.TextField(),
         ),
         migrations.AlterField(
             model_name='post',
